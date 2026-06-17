@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>삼국 영토 전쟁 v23 - 정복군주 통합판</title>
+    <title>조선상고사 - 삼국시대 완벽통합판</title>
     <style>
         body { font-family: 'Malgun Gothic', sans-serif; background-color: #f1f5f9; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
         h1 { margin-bottom: 5px; color: #1e293b; }
@@ -71,7 +71,7 @@
 <body>
 
 <div id="selection-screen">
-    <h1>⚔️ 삼국 영토 전쟁 v23 ⚔️</h1>
+    <h1>⚔️ 조선상고사 - 삼국시대 ⚔️</h1>
     <p style="color: #64748b; font-size: 16px;">천하를 통일할 위대한 군주를 선택하십시오.</p>
     <div class="choice-container">
         <div class="choice-card card-goguryeo" onclick="startGame('goguryeo')">🔴 고구려 (광개토대왕)</div>
@@ -81,7 +81,7 @@
 </div>
 
 <div id="game-screen">
-    <h1 id="game-title">🗺️ 삼국 영토 전쟁 v23</h1>
+    <h1 id="game-title">🗺️ 삼국 영토 전쟁</h1>
     <p id="game-subtitle" style="color: #64748b; margin-top:0; margin-bottom: 12px;"></p>
 
     <div class="container">
@@ -176,7 +176,7 @@
         { id: 38, name: "원촌(여수)", x: 330, y: 760, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [35, 39, 44] },
         { id: 39, name: "탁순국(창원)", x: 420, y: 760, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [36, 37, 38, 41] },
 
-        // 외부 섬 및 해상
+        // 섬 및 해상
         { id: 40, name: "야마토(왜국총본산)", x: 740, y: 760, owner: "neutral", army: 2, type: "archer", castle: 1, exhausted: false, adj: [43, 48] },
         { id: 41, name: "대마도", x: 580, y: 760, owner: "neutral", army: 1, type: "infantry", castle: 0, exhausted: false, adj: [37, 39, 43, 46] },
         { id: 42, name: "우산국", x: 620, y: 350, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [31] },
@@ -187,7 +187,7 @@
         { id: 47, name: "시코쿠 포구", x: 660, y: 860, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [46, 48] },
         { id: 48, name: "혼슈 서부관문", x: 740, y: 860, owner: "neutral", army: 1, type: "spearman", castle: 0, exhausted: false, adj: [40, 47] },
 
-        // 요충지성
+        // 연결선 특수 거점
         { id: 50, name: "흘골산성", x: 340, y: 280, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [10, 14, 16, 51] }, 
         { id: 51, name: "철원성", x: 390, y: 340, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [13, 30, 31, 50] }, 
         { id: 52, name: "칠중성(파주)", x: 320, y: 430, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [0, 5, 8, 11, 13, 53] }, 
@@ -202,68 +202,65 @@
     
     const unitCodes = { infantry: "보", spearman: "창", archer: "궁", cavalry: "기" };
     
-    // 명칭을 역사 속 전성기 군주들로 변경
     const sideStyles = {
-        goguryeo: { name: "고구려(🔴)", title: "광개토대왕", msg: "g-msg", bannerColor: "#dc2626", text: "국내성의 고구려 철기 부대를 기동해 북방을 안정시키고 과감히 남진하십시오!" },
-        baekje: { name: "백제(🔵)", title: "근초고왕", msg: "b-msg", bannerColor: "#2563eb", text: "위례성의 백제군을 휘몰아 한강 유역을 확고히 사수하고 영토를 넓히십시오!" },
-        silla: { name: "신라(🟡)", title: "진흥왕", msg: "s-msg", bannerColor: "#eab308", text: "경주 금성에서 군사력을 모아 연합 세력을 격파하고 북진을 완수하십시오!" }
+        goguryeo: { name: "고구려(🔴)", title: "광개토대왕", msg: "g-msg", bannerColor: "#dc2626", text: "국내성의 개마철기 대부대를 이끌고 사방을 정벌하여 광활한 영토를 개척하십시오!" },
+        baekje: { name: "백제(🔵)", title: "근초고왕", msg: "b-msg", bannerColor: "#2563eb", text: "요동과 요서, 산동과 규슈를 아우르는 대백제의 해상 제국 요새를 완수하십시오!" },
+        silla: { name: "신라(🟡)", title: "진흥왕", msg: "s-msg", bannerColor: "#eab308", text: "금성 사령부의 기틀을 다져 한강 유역을 탈환하고 삼한일통의 새벽을 여십시오!" }
     };
 
     function startGame(side) {
         playerSide = side;
 
-        // 1. 공통 기지 기본 수도 점령 세팅
+        // 1. 공통 기지 설정 (수도 배치)
         nodes.find(n => n.id === 18).owner = "goguryeo"; nodes.find(n => n.id === 18).army = 2; nodes.find(n => n.id === 18).type = "cavalry"; 
         nodes.find(n => n.id === 0).owner = "baekje"; nodes.find(n => n.id === 0).army = 3; nodes.find(n => n.id === 0).type = "infantry";    
         nodes.find(n => n.id === 33).owner = "silla"; nodes.find(n => n.id === 33).army = 1; nodes.find(n => n.id === 33).type = "spearman";   
 
         if (playerSide === 'silla') {
-            // [신라 플레이] 유저는 성 1개 / AI 백제와 고구려는 성 3개 스타팅
+            // [신라 플레이] 유저 성 1개 / AI 백제와 고구려는 각각 성 3개 빌드
             nodes.find(n => n.id === 1).owner = "baekje"; nodes.find(n => n.id === 1).army = 1; nodes.find(n => n.id === 1).type = "infantry";
             nodes.find(n => n.id === 2).owner = "baekje"; nodes.find(n => n.id === 2).army = 1; nodes.find(n => n.id === 2).type = "infantry";
             
             nodes.find(n => n.id === 15).owner = "goguryeo"; nodes.find(n => n.id === 15).army = 1; nodes.find(n => n.id === 15).type = "spearman";
             nodes.find(n => n.id === 22).owner = "goguryeo"; nodes.find(n => n.id === 22).army = 1; nodes.find(n => n.id === 22).type = "infantry";
 
-            // 밸런스 수정 1: 주변 성인 대구(달구벌)와 부산(거칠산)에 보병 1짜리 중립 병사 배치
+            // 밸런스 패치 1: 신라 주변인 대구(달구벌)와 부산(거칠산)에 중립 보병 1 배치
             nodes.find(n => n.id === 32).owner = "neutral"; nodes.find(n => n.id === 32).army = 1; nodes.find(n => n.id === 32).type = "infantry";
             nodes.find(n => n.id === 37).owner = "neutral"; nodes.find(n => n.id === 37).army = 1; nodes.find(n => n.id === 37).type = "infantry";
 
         } else if (playerSide === 'baekje') {
-            // [백제 플레이] 유저는 성 1개 / AI 고구려와 신라는 성 3개 스타팅
+            // [백제 플레이] 유저 성 1개 / AI 고구려 3개, AI 신라 3개 빌드
             nodes.find(n => n.id === 15).owner = "goguryeo"; nodes.find(n => n.id === 15).army = 1; nodes.find(n => n.id === 15).type = "spearman";
             nodes.find(n => n.id === 22).owner = "goguryeo"; nodes.find(n => n.id === 22).army = 1; nodes.find(n => n.id === 22).type = "infantry";
             
-            // 밸런스 수정 2: 신라 AI가 포항(근오지)과 부산(거칠산)을 점령하고 보병 1마리씩 배치
+            // 밸런스 패치 2: 신라 AI가 포항(근오지)과 부산(거칠산)을 점령하고 보병 1마리씩 배치
             nodes.find(n => n.id === 34).owner = "silla"; nodes.find(n => n.id === 34).army = 1; nodes.find(n => n.id === 34).type = "infantry";
             nodes.find(n => n.id === 37).owner = "silla"; nodes.find(n => n.id === 37).army = 1; nodes.find(n => n.id === 37).type = "infantry";
             
-            // 아군 백제 영토 주변은 중립화 거점으로 조정
+            // 아군 백제 주변 거점 중립화
             nodes.find(n => n.id === 1).owner = "neutral"; nodes.find(n => n.id === 1).army = 1; nodes.find(n => n.id === 1).type = "infantry";
             nodes.find(n => n.id === 2).owner = "neutral"; nodes.find(n => n.id === 2).army = 1; nodes.find(n => n.id === 2).type = "infantry";
 
         } else if (playerSide === 'goguryeo') {
-            // [고구려 플레이] 유저는 성 1개 / AI 백제와 신라는 성 3개 스타팅
+            // [고구려 플레이] 유저 성 1개 / AI 백제 3개, AI 신라 3개 빌드
             nodes.find(n => n.id === 1).owner = "baekje"; nodes.find(n => n.id === 1).army = 1; nodes.find(n => n.id === 1).type = "infantry";
             nodes.find(n => n.id === 2).owner = "baekje"; nodes.find(n => n.id === 2).army = 1; nodes.find(n => n.id === 2).type = "infantry";
             
-            // 밸런스 수정 2: 신라 AI가 포항(근오지)과 부산(거칠산)을 점령하고 보병 1마리씩 배치
+            // 밸런스 패치 2: 신라 AI가 포항(근오지)과 부산(거칠산)을 점령하고 보병 1마리씩 배치
             nodes.find(n => n.id === 34).owner = "silla"; nodes.find(n => n.id === 34).army = 1; nodes.find(n => n.id === 34).type = "infantry";
             nodes.find(n => n.id === 37).owner = "silla"; nodes.find(n => n.id === 37).army = 1; nodes.find(n => n.id === 37).type = "infantry";
 
-            // 아군 고구려 영토 주변은 중립화 거점으로 조정
+            // 아군 고구려 주변 거점 중립화
             nodes.find(n => n.id === 15).owner = "neutral"; nodes.find(n => n.id === 15).army = 1; nodes.find(n => n.id === 15).type = "spearman";
             nodes.find(n => n.id === 22).owner = "neutral"; nodes.find(n => n.id === 22).army = 1; nodes.find(n => n.id === 22).type = "infantry";
         }
 
-        // 화면 전환
         document.getElementById('selection-screen').style.display = 'none';
         document.getElementById('game-screen').style.display = 'flex';
 
-        // 대정략 사령실 텍스트 초기 세팅
         const style = sideStyles[playerSide];
-        document.getElementById('game-title').innerText = `🗺️ 삼국 영토 전쟁 v23 (${style.name} ${style.title} 판)`;
-        document.getElementById('game-subtitle').innerText = `위대한 정복 군주의 연산 프로세서 배포 버전 가동`;
+        document.getElementById('game-title').innerText = `🗺️ 삼국 영토 전쟁 v24 (${style.name} ${style.title} 전성기)`;
+        document.getElementById('game-subtitle').innerText = `고지능 오퍼레이션 우회 전술 플랜 B 매트릭스 엔진 탑재`;
         document.getElementById('recruit-title').innerText = `⚔️ ${style.name} 군사 배치 (선택된 내 땅에 소환)`;
         document.getElementById('btn-end-turn').className = `btn btn-active`;
         document.getElementById('btn-end-turn').style.backgroundColor = style.bannerColor;
@@ -340,8 +337,8 @@
         const node = nodes.find(n => n.id === id);
         const style = sideStyles[playerSide];
         if (game.selectedNodeId === null) {
-            if (node.owner !== playerSide) { alert(`아군 ${style.name.split('(')[0]} 거점을 먼저 선택해 주세요.`); return; }
-            if (node.exhausted) { alert("이번 턴 기동이 만료되었습니다."); return; }
+            if (node.owner !== playerSide) { alert(`아군 ${style.name.split('(')[0]} 기지를 먼저 선택해 주세요.`); return; }
+            if (node.exhausted) { alert("이번 턴에 이미 이동한 군대입니다."); return; }
             game.selectedNodeId = id;
         } else if (game.selectedNodeId === id) {
             game.selectedNodeId = null;
@@ -349,34 +346,36 @@
             const startNode = nodes.find(n => n.id === game.selectedNodeId);
             if (startNode.adj.includes(id)) {
                 if (game.moveCount >= 3) {
-                    alert(`${style.title}이시여! 이번 턴에 허용된 최대 작전 기동 횟수(3회)를 모두 소모하셨습니다.`);
+                    alert(`${style.title}이시여! 이번 턴 전술 기동 한도(3회)를 모두 소모하셨습니다.`);
                     game.selectedNodeId = null;
                     updateMapUI();
                     return;
                 }
                 if (startNode.army <= 0) {
-                    alert("출정할 병력이 없습니다!");
+                    alert("진격할 병력이 없습니다!");
                     game.selectedNodeId = null;
                     updateMapUI();
                     return;
                 }
 
                 let maxAvailable = startNode.army; 
-                let inputArmy = prompt(`🛡️ [${startNode.name}] 출정 사령부\n현재 1명부터 최대 ${maxAvailable}명까지 분할 진격이 가능합니다.\n진격시킬 병력 수를 입력하십시오:`, maxAvailable);
+                let inputArmy = prompt(`🛡️ [${startNode.name}] 진격 사령부\n1명부터 최대 ${maxAvailable}명까지 분할 진격이 가능합니다.\n출정시킬 부대 인원수를 입력하십시오:`, maxAvailable);
                 let movingArmy = parseInt(inputArmy);
 
                 if (isNaN(movingArmy) || movingArmy <= 0 || movingArmy > maxAvailable) {
-                    alert("올바른 출정 병력 숫자가 아닙니다. 작전이 취소되었습니다.");
+                    alert("올바른 출정 병력 숫자가 아닙니다. 전술을 취소합니다.");
                     game.selectedNodeId = null;
                     updateMapUI();
                     return;
                 }
 
-                executeCombatAndMove(startNode, node, playerSide, movingArmy);
-                game.moveCount++;
+                let success = executeCombatAndMove(startNode, node, playerSide, movingArmy);
+                if (success) {
+                    game.moveCount++;
+                }
                 game.selectedNodeId = null;
             } else {
-                alert("연결된 경로망으로만 전진할 수 있습니다.");
+                alert("연결된 경로망으로만 군대를 보낼 수 있습니다.");
                 game.selectedNodeId = null;
             }
         }
@@ -449,12 +448,14 @@
         });
     }
 
+    // [전술적 플랜 B 개조 핵심]: 충돌 시 무력 멈춤이 아닌 false를 반환하여 플랜B를 가동하게 함
     function executeCombatAndMove(attackerSourceNode, defender, side, movingArmy) {
-        if (movingArmy <= 0) return;
+        if (movingArmy <= 0) return false;
         const logBox = document.getElementById('log-box');
         const sideNames = { goguryeo: "고구려(🔴)", baekje: "백제(🔵)", silla: "신라(🟡)" };
         const sideClass = { goguryeo: "g-msg", baekje: "b-msg", silla: "s-msg" };
         
+        // 1. 아군 영토 진입 시 다른 병종 충돌 예외 처리
         if (defender.owner === side) {
             if (defender.army === 0 || defender.type === attackerSourceNode.type) {
                 defender.army += movingArmy; defender.type = attackerSourceNode.type;
@@ -463,23 +464,25 @@
                     if(attackerSourceNode.army === 0) attackerSourceNode.type = null;
                 }
                 defender.exhausted = true;
+                updateMapUI(); return true;
             } else { 
-                if(side === playerSide) alert("한 거점에는 같은 병종만 모아둘 수 있습니다!"); 
-                return; 
+                if(side === playerSide) alert("한 거점에는 같은 병종의 부대만 결집할 수 있습니다!"); 
+                return false; // AI 턴일 시 멈춤 없이 플랜 B 전술 자동 전환
             }
-            updateMapUI(); return;
         }
 
+        // 2. 공성전 방어 성벽 인원 제한 충돌 처리
         if (defender.castle > 0 && defender.owner !== side && movingArmy < (defender.castle === 1 ? 3 : 5)) {
             let req = defender.castle === 1 ? 3 : 5;
-            logBox.innerHTML += `<span class="sys-msg">🚨 [공성 실패] 인원 제한(${req}명) 부족으로 ${sideNames[side]} 부대가 격퇴당했습니다.</span><br>`;
-            if(attackerSourceNode.owner === side) {
-                attackerSourceNode.army -= movingArmy;
-                if(attackerSourceNode.army === 0) attackerSourceNode.type = null;
+            if(side === playerSide) {
+                alert(`[공성 실패] 성문 인원 제한(${req}명) 부족으로 진격이 무산되었습니다.`);
+            } else {
+                logBox.innerHTML += `<span class="sys-msg">🚨 [공성 우회] ${sideNames[side]} 부대가 ${defender.name}의 공성 제한벽을 확인하고 회군했습니다.</span><br>`;
             }
-            logBox.scrollTop = logBox.scrollHeight; updateMapUI(); return;
+            return false; // 플랜 B 가동 지점
         }
 
+        // 정상 전투 실행
         logBox.innerHTML += `<span class="${sideClass[side]}">⚔️ [전투] ${attackerSourceNode.name}(${sideNames[side]}) ➔ ${defender.name}</span><br>`;
         let aPower = movingArmy; let dPower = defender.army;
         let aType = attackerSourceNode.type; let dType = defender.type;
@@ -501,15 +504,16 @@
             let winArmy = aPower - dPower;
             defender.owner = side; defender.army = winArmy; defender.type = aType; defender.exhausted = true;
             if (defender.id !== 0 && defender.id !== 18 && defender.id !== 33) defender.castle = Math.max(0, defender.castle - 1);
-            logBox.innerHTML += `<span class="sys-msg">🎉 진격 격파! ${sideNames[side]}가 ${defender.name}을 정복했습니다. (생존: ${winArmy}명)</span><br>`;
+            logBox.innerHTML += `<span class="sys-msg">🎉 정복 완수! ${sideNames[side]}가 ${defender.name}을 영토로 편입했습니다. (생존: ${winArmy}명)</span><br>`;
         } else if (dPower > aPower) {
-            defender.army = dPower - aPower; logBox.innerHTML += `🛡️ 수비 성공! ${defender.name} 수비대가 자리를 사수했습니다.<br>`;
+            defender.army = dPower - aPower; logBox.innerHTML += `🛡️ 요새 사수! ${defender.name} 수비대가 공세를 격퇴했습니다.<br>`;
         } else {
             defender.army = 0; if (defender.id !== 0 && defender.id !== 18 && defender.id !== 33) defender.castle = 0;
-            defender.owner = 'neutral'; defender.type = null; logBox.innerHTML += `<span class="sys-msg">💥 양 진영 동귀어진 전멸!</span><br>`;
+            defender.owner = 'neutral'; defender.type = null; logBox.innerHTML += `<span class="sys-msg">💥 양 군 격렬한 격전 끝에 전멸(동귀어진)!</span><br>`;
         }
         
         logBox.scrollTop = logBox.scrollHeight; checkCapitalFall(); updateMapUI();
+        return true;
     }
 
     function checkCapitalFall() {
@@ -519,7 +523,7 @@
 
         if (nodes.find(n => n.id === capitals[playerSide]).owner !== playerSide) {
             const style = sideStyles[playerSide];
-            alert(`🚨 [패망] 수도가 함락되었습니다. ${style.title}의 천하일통 대업이 무너졌습니다.`);
+            alert(`🚨 [수도 함락] 종묘사직이 무너졌습니다. ${style.title}의 통일 대업이 아쉽게 좌절되었습니다.`);
             location.reload(); return;
         }
 
@@ -527,7 +531,7 @@
             if (side === playerSide) return;
             if (!game[side + 'Defeated'] && nodes.find(n => n.id === capitals[side]).owner !== side) {
                 game[side + 'Defeated'] = true;
-                logBox.innerHTML += `<span class="sys-msg">💥 [${textMap[side]}] 해당 세력의 모든 영토가 중립지로 전환됩니다.</span><br>`;
+                logBox.innerHTML += `<span class="sys-msg">💥 [${textMap[side]}] 해당 세력의 거점이 모두 와해되어 중립화됩니다.</span><br>`;
                 nodes.forEach(n => { if(n.owner === side) { n.owner = 'neutral'; n.army = 0; n.type = null; n.castle = 0;} });
             }
         });
@@ -535,7 +539,7 @@
         const aiSides = ['goguryeo', 'baekje', 'silla'].filter(s => s !== playerSide);
         if (game[aiSides[0] + 'Defeated'] && game[aiSides[1] + 'Defeated']) {
             const style = sideStyles[playerSide];
-            alert(`🏆 ✨【 삼 국 천 하 통 일 】✨ 🏆\n\n위대한 대업을 완수하셨습니다 ${style.title}이시여! 천하의 주인이 되신 것을 축하드립니다!`);
+            alert(`🏆 ✨【 삼 국 천 하 통 일 】✨ 🏆\n\n대업을 달성하셨습니다, ${style.title}이시여! 대륙과 삼천리강산이 비로소 하나가 되었습니다!`);
             location.reload();
         }
     }
@@ -543,12 +547,12 @@
     function buyUnit(type, cost) {
         if (game.selectedNodeId === null) return;
         const node = nodes.find(n => n.id === game.selectedNodeId);
-        if (node.army > 0 && node.type !== type) { alert("다른 주력 부대가 배치되어 있습니다!"); return; }
+        if (node.army > 0 && node.type !== type) { alert("한 기지에는 같은 병종만 모을 수 있습니다!"); return; }
         
         const goldKey = playerSide + 'Gold';
         if (game[goldKey] >= cost) { 
             game[goldKey] -= cost; node.army += 1; node.type = type; updateMapUI(); 
-        } else { alert("자금이 부족합니다!"); }
+        } else { alert("국고에 골드가 부족합니다!"); }
     }
 
     function buildCastle() {
@@ -560,6 +564,7 @@
         } else if(game[goldKey] < 100) { alert("골드가 부족합니다."); }
     }
 
+    // [플랜 B 자동 우회 탑재 알고리즘]
     function runEnemyAITurn(side, goldKey, isDefeated) {
         if (isDefeated) return; 
         const sideUnits = { goguryeo: "cavalry", baekje: "infantry", silla: "spearman" }; 
@@ -662,6 +667,7 @@
         });
 
         possibleMoves.sort((a, b) => b.priorityScore - a.priorityScore);
+        
         let aiMovesCount = 0;
         for (let i = 0; i < possibleMoves.length; i++) {
             if (aiMovesCount >= 3) break;
@@ -672,7 +678,8 @@
 
             if (move.to.owner === side) {
                 if (move.to.id === capitalId && (move.to.army === 0 || move.to.type === move.from.type)) {
-                    executeCombatAndMove(move.from, move.to, side, currentAvailableArmy); aiMovesCount++;
+                    let success = executeCombatAndMove(move.from, move.to, side, currentAvailableArmy);
+                    if (success) aiMovesCount++;
                 }
                 continue;
             }
@@ -680,10 +687,15 @@
             let reqArmy = move.to.castle === 1 ? 3 : (move.to.castle === 2 ? 5 : 0);
             if (currentAvailableArmy < reqArmy) continue;
 
-            executeCombatAndMove(move.from, move.to, side, currentAvailableArmy); aiMovesCount++;
+            // [우회 기동 연산 핵심]: 만약 행동에 충돌이 발생하면 루프를 터트리지 않고 바로 플랜 B(다음 순위 move)로 연산 자동 우회
+            let success = executeCombatAndMove(move.from, move.to, side, currentAvailableArmy);
+            if (success) {
+                aiMovesCount++;
+            }
         }
     }
 
+    // [턴 프리징 방지 구조]: 어떤 변수가 터져도 100% 플레이어 턴으로 복귀하도록 체인식 완전 무결 보장
     function endPlayerTurn() {
         const logBox = document.getElementById('log-box');
         const countKey = playerSide + 'Gold';
@@ -693,27 +705,44 @@
         nodes.forEach(node => { if (node.owner === playerSide) node.exhausted = false; });
         game.moveCount = 0;
 
+        // 플레이어를 뺀 나머지 두 국가의 AI 실행 순서 고리 구축
         const order = ['goguryeo', 'baekje', 'silla'].filter(s => s !== playerSide);
         runAIChain(0);
 
         function runAIChain(index) {
+            // 모든 연산이 완료되거나 에러 스택을 통과하면 유저 턴으로 확실히 복귀
             if (index >= order.length) {
                 game.turn += 1;
                 document.getElementById('turn-txt').innerText = game.turn;
-                logBox.innerHTML += `----------------------------------------<br><span class="sys-msg">⏳ [제 ${game.turn} 턴 시작] 전략적 판세 분석 연산이 완료되었습니다.</span><br>`;
+                const style = sideStyles[playerSide];
+                document.getElementById('turn-banner').innerText = `${style.name.split('(')[0]} (${style.title}) 작전 타임 [Turn ${game.turn}]`;
+                document.getElementById('turn-banner').style.backgroundColor = style.bannerColor;
+                
+                logBox.innerHTML += `----------------------------------------<br><span class="sys-msg">⏳ [제 ${game.turn} 턴 시작] 전략적 판세 배치가 업데이트되었습니다. 명령을 내리십시오.</span><br>`;
                 logBox.scrollTop = logBox.scrollHeight;
                 updateMapUI();
                 return;
             }
 
             const currentAISide = order[index];
-            const style = sideStyles[currentAISide];
             
-            document.getElementById('turn-banner').innerText = `${style.name.split('(')[0]} (${style.title}) 군사 기동 계산 중...`;
+            // 만약 해당 AI가 패망했다면 0.1초의 대기시간도 없이 '즉시' 다음 체인 함수를 실행해 프리징 제거
+            if (game[currentAISide + 'Defeated']) {
+                runAIChain(index + 1);
+                return;
+            }
+
+            const style = sideStyles[currentAISide];
+            document.getElementById('turn-banner').innerText = `${style.name.split('(')[0]} (${style.title}) 결집 연산 및 기동 중...`;
             document.getElementById('turn-banner').style.backgroundColor = style.bannerColor;
             
             setTimeout(() => {
-                runEnemyAITurn(currentAISide, currentAISide + 'Gold', game[currentAISide + 'Defeated']);
+                try {
+                    runEnemyAITurn(currentAISide, currentAISide + 'Gold', game[currentAISide + 'Defeated']);
+                } catch(e) {
+                    console.log("AI 연산 내부 충돌 무시 및 우회 프로세스 가동");
+                }
+                // 에러가 나거나 예외가 나더라도 확실하게 index + 1을 강제 가동
                 runAIChain(index + 1);
             }, 400);
         }
