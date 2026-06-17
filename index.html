@@ -8,7 +8,7 @@
         body { font-family: 'Malgun Gothic', sans-serif; background-color: #f1f5f9; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; box-sizing: border-box; }
         h1 { margin-bottom: 5px; color: #1e293b; text-align: center; }
         
-        /* 🏰 선택 화면 스타일 최적화 (상자 크기 컴팩트 조절) */
+        /* 🏰 선택 화면 스타일 최적화 */
         #selection-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 85vh; text-align: center; width: 100%; max-width: 400px; }
         #selection-screen h1 { font-size: 26px; font-weight: 800; color: #0f172a; letter-spacing: -1px; margin-bottom: 0; }
         #selection-screen p { font-size: 14px; color: #475569; margin-top: 5px; font-weight: 500; padding: 0 10px; }
@@ -23,7 +23,6 @@
             border: 3px solid rgba(255,255,255,0.15); display: flex; flex-direction: column; align-items: center; gap: 6px;
             box-sizing: border-box;
         }
-        
         .choice-card:hover { transform: scale(1.02); }
         .card-icon { font-size: 32px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.25)); }
         
@@ -38,25 +37,31 @@
         
         /* 게임 화면 스타일 */
         #game-screen { display: none; flex-direction: column; align-items: center; width: 100%; }
-        .container { display: flex; flex-direction: column; gap: 15px; width: 100%; align-items: center; }
         
-        /* 📱 [수정] 지도와 하단 상태창을 묶어서 통째로 폰 폭에 맞춰 자동 축소시키는 스케일러 */
+        /* 🔄 [핵심 개조] 기기 너비에 맞춰 가로/세로 배치를 자동 전환하는 반응형 컨테이너 */
+        .container { 
+            display: flex; 
+            flex-direction: row; /* 기본값: PC에서는 가로로 나란히 배치 */
+            gap: 20px; 
+            max-width: 1450px; 
+            width: 100%; 
+            align-items: flex-start; 
+            justify-content: center;
+        }
+        
+        /* 스케일러 래퍼 기본 상태 (PC) */
         #map-scaler-wrapper {
-            width: 100%;
-            overflow: hidden;
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            margin-bottom: 10px;
-            transform-origin: top center; /* 중앙 상단 기준으로 깔끔하게 비율 축소 */
+            flex-direction: row;
+            gap: 20px;
+            align-items: flex-start;
+            transform-origin: top center;
         }
 
         #map-container { 
             position: relative; width: 800px; height: 950px; flex-shrink: 0; 
             background-color: #bae6fd; border: 8px solid #cbd5e1; border-radius: 20px; 
             box-shadow: 0 12px 30px rgba(0,0,0,0.15); overflow: hidden;
-            margin-bottom: 15px;
         }
         
         #coastline-canvas { position: absolute; top:0; left:0; width:100%; height:100%; z-index: 2; pointer-events: none; }
@@ -82,8 +87,8 @@
         line { stroke: #451a03; stroke-width: 3; stroke-linecap: round; opacity: 0.35; }
         line.sea-route { stroke: #0284c7; stroke-width: 3.5; stroke-dasharray: 4 4; opacity: 0.7; }
 
-        /* 📱 [수정] 패널의 기본 너비를 지도와 똑같은 800px로 매칭! (스케일러에 의해 동시에 줄어듦) */
-        .panel { width: 800px; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 15px; box-sizing: border-box; }
+        /* 패널 기본 상태 (PC 우측 정렬용) */
+        .panel { width: 450px; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 15px; box-sizing: border-box; }
         .status-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 5px; }
         .status-box { padding: 10px 4px; border-radius: 8px; border-top: 5px solid #cbd5e1; font-size: 13px; font-weight: bold; text-align: center; background: #f8fafc; }
         .status-box.b-box { border-top-color: #2563eb; }
@@ -120,6 +125,21 @@
         
         .btn-split-cancel { padding: 10px 14px; font-size: 13px; font-weight: bold; border: 2px solid #fca5a5; border-radius: 8px; background: #fef2f2; color: #b91c1c; cursor: pointer; transition: all 0.2s; height: 42px; margin-left: 6px; }
         .btn-split-cancel:hover { background: #fee2e2; border-color: #ef4444; }
+
+        /* 🔄 [미디어 쿼리] 화면 가로폭이 1280px 미만(스마트폰, 작은 태블릿 세로)일 때 레이아웃 자동 전환 */
+        @media (max-width: 1280px) {
+            .container {
+                flex-direction: column; /* 세로 정렬로 변경 */
+                align-items: center;
+            }
+            #map-scaler-wrapper {
+                flex-direction: column; /* 패널을 지도 밑으로 수직 하강 */
+                align-items: center;
+            }
+            .panel {
+                width: 800px; /* 스마트폰 연산 모드일 때는 패널 너비도 지도와 똑같이 800px로 매칭 */
+            }
+        }
     </style>
 </head>
 <body>
@@ -172,7 +192,7 @@
                         <h4 id="recruit-title" style="margin: 8px 0 4px 0; font-size: 14px;">⚔️ 군사 배치</h4>
                         <div class="unit-buy-grid">
                             <button class="btn-unit" onclick="buyUnit('infantry', 20)">✊ 보병 (20G)<br><span style="font-size:9px;color:#64748b;">기본 병사</span></button>
-                            <button class="btn-unit" onclick="buyUnit('spearman', 40)">🔱 창병 (40G)<br><span style="font-size:9px;color:#22c55e;">기병 2기 상쇄</span></button>
+                            <button class="btn-unit" onclick="buyUnit('spearman', 40)">🔱 창병 (40G)<br><span style="font-size:9px;color:#22c55e;">기변 2기 상쇄</span></button>
                             <button class="btn-unit" onclick="buyUnit('archer', 40)">🏹 궁병 (40G)<br><span style="font-size:9px;color:#22c55e;">창병 2기 상쇄</span></button>
                             <button class="btn-unit" onclick="buyUnit('cavalry', 40)">🐎 기병 (40G)<br><span style="font-size:9px;color:#22c55e;">궁병 2기 상쇄</span></button>
                         </div>
@@ -301,20 +321,24 @@
         return nodes.find(n => n.id === id);
     }
 
-    // 📱 [수정] 지도와 하단 패널 전체가 한 몸으로 똑같은 비율로 축소되도록 연산 공식 전면 수정
+    // 📱 [수정] 스케일 박스의 감지 대상 및 계산식을 수정하여 지도와 패널의 좌우 폭이 항상 일치하도록 동기화
     function adjustMapScale() {
         const wrapper = document.getElementById('map-scaler-wrapper');
-        if (!wrapper) return;
+        const map = document.getElementById('map-container');
+        const panel = document.querySelector('.panel');
+        if (!wrapper || !map || !panel) return;
 
-        const windowWidth = window.innerWidth - 20; // 패딩 여백 제외 실폭
-        const targetWidth = 800; // 가로 기준 크기
+        const windowWidth = window.innerWidth - 20; 
+        const isMobileFactor = window.getComputedStyle(panel).width === '800px' || window.innerWidth <= 1280;
 
-        if (windowWidth < targetWidth) {
-            const scale = windowWidth / targetWidth;
+        if (isMobileFactor && windowWidth < 800) {
+            // 모바일 형태일 때: 전체 세트를 폰 가로 폭에 맞춰 동일 배율로 줌 축소
+            const scale = windowWidth / 800;
             wrapper.style.transform = `scale(${scale})`;
-            // 지도(950px) + 패널(약 480px) 전체 합산 정격 높이를 비율만큼 축소 적용
-            wrapper.style.height = `${1450 * scale}px`; 
+            // 지도(950px) + 마진(15px) + 상태창 높이(유동적이나 약 450px 내외) 합산 정격 환산 높이 강제 추종
+            wrapper.style.height = `${(965 + panel.offsetHeight) * scale}px`; 
         } else {
+            // PC 형태일 때: 스케일링을 해제하여 정격 크기 보존
             wrapper.style.transform = 'none';
             wrapper.style.height = 'auto';
         }
@@ -373,7 +397,7 @@
         endBtn.innerText = `⏳ 작전 완료 (턴 종료)`;
 
         initMap();
-        setTimeout(adjustMapScale, 50); // 컴포넌트 안착 후 크기 최적화 공식 적용
+        setTimeout(adjustMapScale, 100); // 돔 트리 안착 사이클 대기 후 정밀 스케일 계산 실행
     }
 
     function drawCoastlines() {
@@ -595,6 +619,9 @@
                 goldTxt.innerText = `${game[side + 'Gold']} G (+${count * 10}G)`;
             }
         });
+        
+        // 📱 UI 요소의 글자가 늘어나 높이가 바뀌는 변수를 실시간 감지하여 모바일 높이 재계산 처리
+        setTimeout(adjustMapScale, 10);
     }
 
     function executeCombatAndMove(attackerSourceNode, defender, side, movingArmy) {
