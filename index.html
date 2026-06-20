@@ -76,22 +76,22 @@
         .node.neutral { background-color: #475569; }
         .node.selected { border-color: #f59e0b; box-shadow: 0 0 22px #f59e0b; width: 42px; height: 42px; }
         
-        /* 🕵️ 시야가 없는 상태의 담백한 스타일 */
-        .node.unrevealed { background-color: #64748b !important; border-color: #475569 !important; box-shadow: none; }
+        /* 🕵️ 시야가 없는 안개 지역 성 스타일 보정 (글자 가리는 shadow 완전 제거) */
+        .node.unrevealed { background-color: #64748b !important; border-color: #475569 !important; box-shadow: none !important; }
         .node.unrevealed .unit-icon, .node.unrevealed .army-count, .node.unrevealed .castle-icon { display: none !important; }
         .node.unrevealed .node-label { background: #cbd5e1; color: #475569; }
 
         .node.has-castle { border-color: #f97316; border-width: 3px; box-shadow: 0 0 14px rgba(249, 115, 22, 0.7); }
-        .node .unit-icon { font-size: 11px; font-weight: bold; color: #fff; margin-bottom: -3px; pointer-events: none; }
-        .node .army-count { color: #fff; font-weight: bold; font-size: 13px; pointer-events: none; }
+        .node .unit-icon { font-size: 11px; font-weight: bold; color: #fff; margin-bottom: -3px; pointer-events: none; text-shadow: none !important; }
+        .node .army-count { color: #fff; font-weight: bold; font-size: 13px; pointer-events: none; text-shadow: none !important; }
         
-        .node .castle-icon { position: absolute; top: -18px; font-size: 16px; pointer-events: none; text-shadow: 0 2px 4px rgba(0,0,0,0.5); font-weight: normal; }
+        .node .castle-icon { position: absolute; top: -18px; font-size: 16px; pointer-events: none; font-weight: normal; text-shadow: none !important; }
         .node-label { position: absolute; bottom: -20px; white-space: nowrap; font-size: 9.5px; font-weight: bold; background: rgba(255,255,255,0.9); padding: 2px 4px; border-radius: 4px; color: #1e293b; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
 
         svg { position: absolute; width: 100%; height: 100%; z-index: 5; pointer-events: none; }
         line { stroke: #451a03; stroke-width: 3; stroke-linecap: round; opacity: 0.35; }
         line.sea-route { stroke: #0284c7; stroke-width: 3.5; stroke-dasharray: 4 4; opacity: 0.7; }
-        line.hidden-line { opacity: 0.05; } /* 시야 밖 경로는 흐리게 */
+        line.hidden-line { opacity: 0.05; }
 
         /* 패널 기본 상태 (PC 우측 정렬용) */
         .panel { width: 450px; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 15px; box-sizing: border-box; }
@@ -106,7 +106,7 @@
         .btn { width: 100%; padding: 12px; margin: 5px 0; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; background: #e2e8f0; color: #334155; }
         .btn-active { background: #cbd5e1; color: white; }
         .btn-castle { background: #10b981; color: white; }
-        .btn-spy { background: #4f46e5; color: white; } /* 세작 양성 버튼 전용 색상 */
+        .btn-spy { background: #4f46e5; color: white; }
         
         .unit-buy-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 5px; }
         .btn-unit { padding: 12px; font-size: 14px; font-weight: bold; cursor: pointer; border: 1px solid #cbd5e1; border-radius: 6px; background: #fff; text-align: left; }
@@ -133,7 +133,6 @@
         .btn-split-cancel { padding: 10px 14px; font-size: 13px; font-weight: bold; border: 2px solid #fca5a5; border-radius: 8px; background: #fef2f2; color: #b91c1c; cursor: pointer; transition: all 0.2s; height: 42px; margin-left: 6px; }
         .btn-split-cancel:hover { background: #fee2e2; border-color: #ef4444; }
 
-        /* 화면 가로폭이 1280px 미만일 때 레이아웃 자동 전환 */
         @media (max-width: 1280px) {
             .container { flex-direction: column; align-items: center; }
             #map-scaler-wrapper { flex-direction: column; align-items: center; }
@@ -186,7 +185,6 @@
                     <div id="selected-info" style="background: #f1f5f9; padding: 10px; border-radius: 8px; font-size: 12px; min-height: 40px;"></div>
 
                     <div class="action-section">
-                        <!-- 🕵️ 세작 예산 집행 센터 -->
                         <button class="btn btn-spy" id="btn-spy-upgrade" onclick="upgradeSpy()">🕵️ 세작 양성하기 (300 골드)</button>
                         <button class="btn btn-castle" id="btn-castle" onclick="buildCastle()" style="display:none;">🧱 1단계 성벽 구축 (100 골드)</button>
                         
@@ -280,14 +278,13 @@
 
     let nodes = JSON.parse(JSON.stringify(initialNodesData));
 
-    // 🕵️ 정보력 레벨 전역 상태값 통합 (0: 인접1칸, 1: 인접2칸, 2: 전체맵)
     let game = { 
         turn: 1, goguryeoGold: 100, baekjeGold: 100, sillaGold: 100, 
         selectedNodeId: null, goguryeoDefeated: false, baekjeDefeated: false, sillaDefeated: false,
-        moveCount: 0, spyLevel: 0 
+        moveCount: 0, spyLevel: 0
     };
 
-    const CAPITAL_IDS = [0, 18, 33]; // 삼국 수도 ID 목록
+    const CAPITAL_IDS = [0, 18, 33];
     const unitCodes = { infantry: "보", spearman: "창", archer: "궁", cavalry: "기" };
     const sideStyles = {
         goguryeo: { name: "고구려(🔴)", title: "광개토대왕", msg: "g-msg", bannerColor: "#dc2626", text: "국내성의 개마철기 대부대를 이끌고 사방을 정벌하여 광활한 영토를 개척하십시오!" },
@@ -422,7 +419,6 @@
         islands.forEach(isl => { ctx.beginPath(); ctx.arc(isl.x, isl.y, isl.r, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); });
     }
 
-    // 🕵️ 현재 플레이어 정보력 레벨에 따라 시야가 확보된 성 ID 셋 구하는 연산기
     function getVisibleNodeIds() {
         let visibleIds = new Set();
         let myNodes = nodes.filter(n => n.owner === playerSide);
@@ -455,7 +451,6 @@
         return visibleIds;
     }
 
-    // 🕵️ 세작 양성 업그레이드 트랙 관리
     function upgradeSpy() {
         const goldKey = playerSide + 'Gold';
         const logBox = document.getElementById('log-box');
@@ -524,7 +519,6 @@
         const style = sideStyles[playerSide];
         const visibleIds = getVisibleNodeIds();
 
-        // 🕵️ 세작 시야 영역 밖 차단 규칙 정의
         if (!visibleIds.has(id)) {
             if (CAPITAL_IDS.includes(id)) {
                 alert("적국 수도의 위치는 아군 사령부에 등재되어 있으나, 아직 인접 세작이 파견되지 않아 수비 병력 현황을 알 수 없습니다. 근처 성을 공략하십시오.");
@@ -628,7 +622,7 @@
             const div = document.getElementById(`node-${node.id}`);
             if(!div) return;
             
-            // 기본 상태 설정
+            // 기본 클래스 및 상태 초기화
             div.className = `node ${node.owner}`;
             if (node.owner === playerSide && node.exhausted) div.classList.add('exhausted');
             if (game.selectedNodeId === node.id) div.classList.add('selected');
@@ -636,31 +630,50 @@
             
             const iconSpan = div.querySelector('.unit-icon');
             const countSpan = div.querySelector('.army-count');
+            
+            // 구형 고정 방식 엘리먼트 완전 파괴 후 재빌드 루틴 가동
             const oldCastle = div.querySelector('.castle-icon');
             if (oldCastle) oldCastle.remove();
-            
-            if (node.castle === 1) {
-                const castleIcon = document.createElement('span'); castleIcon.className = 'castle-icon'; castleIcon.innerText = "🧱"; div.appendChild(castleIcon);
-            } else if (node.castle === 2) {
-                const castleIcon = document.createElement('span'); castleIcon.className = 'castle-icon'; castleIcon.innerText = "🏰"; div.appendChild(castleIcon);
-            }
 
-            if (node.army > 0) {
-                iconSpan.innerText = unitCodes[node.type] || '';
-                countSpan.innerText = node.army;
-            } else { iconSpan.innerText = ""; countSpan.innerText = ""; }
+            // 🕵️ [버그 수정 핵심]: 안개 지역(unrevealed) 여부를 먼저 판단하여 그릴지 말지 완전 분기
+            let isVisible = visibleIds.has(node.id);
 
-            // 🕵️ 세작 가시성 실시간 마스킹 처리 (담백한 형태)
-            if (!visibleIds.has(node.id)) {
+            if (!isVisible) {
                 if (CAPITAL_IDS.includes(node.id)) {
-                    // 수도는 위치만 알려주고 내부 주 주둔 정보는 블라인드
+                    // 수도는 검은 그림자 꼬임 없이 깔끔하게 '물음표와 수도관문 마크'만 표시
                     div.className = "node neutral"; 
                     iconSpan.innerText = "?";
                     countSpan.innerText = "";
-                    const fakeCastle = document.createElement('span'); fakeCastle.className = 'castle-icon'; fakeCastle.innerText = "👑"; div.appendChild(fakeCastle);
+                    const fakeCastle = document.createElement('span'); 
+                    fakeCastle.className = 'castle-icon'; 
+                    fakeCastle.innerText = "👑"; 
+                    div.appendChild(fakeCastle);
                 } else {
-                    // 일반 성은 정찰 전까지 짙은 회색 중립 안개색으로 감춤
+                    // 일반 안개지역은 성벽 아이콘 생성 자체를 스킵하고 블라인드
                     div.classList.add('unrevealed');
+                    iconSpan.innerText = "";
+                    countSpan.innerText = "";
+                }
+            } else {
+                // 시야가 있는 지역(내 땅 + 밝혀진 적국 땅)일 때만 성벽을 정격 렌더링
+                if (node.castle === 1) {
+                    const castleIcon = document.createElement('span'); 
+                    castleIcon.className = 'castle-icon'; 
+                    castleIcon.innerText = "🧱"; 
+                    div.appendChild(castleIcon);
+                } else if (node.castle === 2) {
+                    const castleIcon = document.createElement('span'); 
+                    castleIcon.className = 'castle-icon'; 
+                    castleIcon.innerText = "🏰"; 
+                    div.appendChild(castleIcon);
+                }
+
+                if (node.army > 0) {
+                    iconSpan.innerText = unitCodes[node.type] || '';
+                    countSpan.innerText = node.army;
+                } else { 
+                    iconSpan.innerText = ""; 
+                    countSpan.innerText = ""; 
                 }
             }
 
@@ -698,7 +711,6 @@
             btnCastle.style.display = 'none';
         }
 
-        // 🕵️ 세작 업그레이드 단추 관리
         const spyBtn = document.getElementById('btn-spy-upgrade');
         if (game.spyLevel === 0) {
             spyBtn.innerText = "🕵️ 세작 파견 (300 골드) [현재 Lv.0]"; spyBtn.disabled = false;
