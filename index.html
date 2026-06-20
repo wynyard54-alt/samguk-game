@@ -78,13 +78,13 @@
         #map-container { 
             position: relative;
             width: 800px; height: 950px; flex-shrink: 0; 
-            background-color: #bae6fd; border: 8px solid #cbd5e1; border-radius: 20px; 
+            background-image: url('Gemini_Generated_Image_oamm6aoamm6aoamm.png');
+            background-size: cover;
+            background-position: center;
+            border: 8px solid #cbd5e1; border-radius: 20px; 
             box-shadow: 0 12px 30px rgba(0,0,0,0.15);
             overflow: hidden;
         }
-        
-        #coastline-canvas { position: absolute;
-            top:0; left:0; width:100%; height:100%; z-index: 2; pointer-events: none; }
         
         .node { position: absolute;
             width: 36px; height: 36px; border-radius: 50%; background-color: #94a3b8; border: 2px solid #ffffff; z-index: 10; cursor: pointer; transform: translate(-50%, -50%);
@@ -109,14 +109,31 @@
         .node .army-count { color: #fff; font-weight: bold; font-size: 13px; pointer-events: none; text-shadow: none !important; }
         
         .node .castle-icon { position: absolute; top: -18px; font-size: 16px; pointer-events: none; font-weight: normal; text-shadow: none !important; }
+        
         .node-label { position: absolute; bottom: -20px; white-space: nowrap; font-size: 9.5px; font-weight: bold;
-            background: rgba(255,255,255,0.9); padding: 2px 4px; border-radius: 4px; color: #1e293b; box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+            background: rgba(255,255,255,0.95); padding: 2px 5px; border-radius: 4px; color: #0f172a; box-shadow: 0 1px 4px rgba(0,0,0,0.3);
         }
 
         svg { position: absolute; width: 100%; height: 100%; z-index: 5; pointer-events: none; }
-        line { stroke: #451a03; stroke-width: 3; stroke-linecap: round; opacity: 0.35; }
-        line.sea-route { stroke: #0284c7; stroke-width: 3.5; stroke-dasharray: 4 4; opacity: 0.7; }
-        line.hidden-line { opacity: 0.05; }
+    
+    /* 🗺️ 길(노선) 스타일: 밝은 연두색 & 화이트 외곽선 보정 */
+    line { 
+        stroke: #84cc16; 
+        stroke-width: 2; 
+        stroke-linecap: round; 
+        opacity: 0.9; 
+        /* 선 주변에 흰색 테두리를 미세하게 추가하여 위성 이미지 위에서 명확하게 보이도록 처리 */
+        filter: drop-shadow(0px 0px 1px #ffffff) drop-shadow(0px 2px 3px rgba(0, 0, 0, 0.5));
+    }
+        /* 해상 루트는 푸른 바다와 대비되는 밝은 하늘색 점선 처리 */
+        line.sea-route { 
+        stroke: #0ea5e9; 
+        stroke-width: 2; 
+        stroke-dasharray: 5 4; 
+        opacity: 0.95; 
+        filter: drop-shadow(0px 0px 1px #ffffff) drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.7));
+    }
+    line.hidden-line { opacity: 0.03; filter: none; }
 
         .panel { width: 450px; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 15px; box-sizing: border-box; }
         .status-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 5px; }
@@ -192,7 +209,6 @@
     <div class="container">
         <div id="map-scaler-wrapper">
             <div id="map-container">
-                <canvas id="coastline-canvas" width="800" height="950"></canvas>
                 <svg id="svg-lines"></svg>
             </div>
 
@@ -247,62 +263,62 @@
     let resizeTimeout = null;
     
     const initialNodesData = [
-        { id: 0, name: "위례성(백제수도)", x: 240, y: 450, owner: "neutral", army: 0, type: null, castle: 1, exhausted: false, adj: [1, 2, 4, 11, 52] }, 
-        { id: 1, name: "웅진", x: 260, y: 520, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [0, 2, 5, 6] },
-        { id: 2, name: "당항성(화성)", x: 190, y: 520, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [0, 1, 3] },
-        { id: 3, name: "기벌포(서천)", x: 190, y: 600, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [2, 6, 7] }, 
-        { id: 4, name: "장연", x: 200, y: 360, owner: "neutral", army: 1, type: "infantry", castle: 0, exhausted: false, adj: [0, 10, 11, 28] },
-        { id: 5, name: "관산성(옥천)", x: 340, y: 550, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [1, 6, 32, 52] }, 
-        { id: 6, name: "금마저(익산)", x: 260, y: 620, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [3, 5, 7, 32] }, 
-        { id: 7, name: "무진(광주)", x: 190, y: 680, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [3, 6, 9, 35, 44] }, 
-        { id: 9, name: "물아혜(목포)", x: 190, y: 760, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [7, 44] },
+        { id: 0, name: "위례성(백제수도)", x: 330, y: 450, owner: "neutral", army: 0, type: null, castle: 1, exhausted: false, adj: [2, 11, 13, 52] }, 
+        { id: 1, name: "웅진", x: 335, y: 560, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [2, 5, 6, 52] },
+        { id: 2, name: "당항성", x: 300, y: 510, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [0, 1, 3] },
+        { id: 3, name: "기벌포", x: 280, y: 610, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [2, 6, 9] }, 
+        { id: 4, name: "장연", x: 210, y: 370, owner: "neutral", army: 1, type: "infantry", castle: 0, exhausted: false, adj: [10, 11, 28] },
+        { id: 5, name: "관산성", x: 390, y: 580, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [1, 6, 8, 35, 52] }, 
+        { id: 6, name: "금마저", x: 340, y: 630, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [3, 5, 7] }, 
+        { id: 7, name: "무진", x: 330, y: 700, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [6, 9, 35, 44] }, 
+        { id: 9, name: "물아혜", x: 260, y: 750, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [3, 7, 44] },
   
-        { id: 10, name: "평양성 대성곽", x: 260, y: 300, owner: "neutral", army: 2, type: "archer", castle: 0, exhausted: false, adj: [4, 11, 14, 50] }, 
-        { id: 11, name: "개경", x: 260, y: 380, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [0, 4, 10, 13, 52] }, 
-        { id: 12, name: "오골성 요새", x: 180, y: 220, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [14, 15, 20, 28] },
+        { id: 10, name: "평양성", x: 270, y: 330, owner: "neutral", army: 2, type: "archer", castle: 0, exhausted: false, adj: [4, 11, 14, 50] }, 
+        { id: 11, name: "개경", x: 280, y: 400, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [0, 4, 10, 13] }, 
+        { id: 12, name: "오골성 요새", x: 180, y: 230, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [14, 15, 20, 28] },
  
-        { id: 13, name: "매소성(연천)", x: 310, y: 360, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [11, 51, 52] }, 
-        { id: 14, name: "철옹성(녕변)", x: 260, y: 220, owner: "neutral", army: 1, type: "infantry", castle: 0, exhausted: false, adj: [10, 12, 18, 50] }, 
-        { id: 15, name: "신성", x: 240, y: 140, owner: "neutral", army: 0, type: null, castle: 1, exhausted: false, adj: [12, 18, 22] },
+        { id: 13, name: "매소성", x: 350, y: 380, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [0, 11, 51] }, 
+        { id: 14, name: "철옹성", x: 270, y: 260, owner: "neutral", army: 1, type: "infantry", castle: 0, exhausted: false, adj: [10, 12, 18, 50] }, 
+        { id: 15, name: "홀본", x: 260, y: 150, owner: "neutral", army: 0, type: null, castle: 1, exhausted: false, adj: [12, 18, 22] },
      
-        { id: 16, name: "매시달(원산)", x: 440, y: 250, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [17, 21, 31, 50] }, 
-        { id: 17, name: "황초령(함흥)", x: 490, y: 180, owner: "neutral", army: 1, type: "spearman", castle: 0, exhausted: false, adj: [16, 24] },
-        { id: 18, name: "국내성(고구려수도)", x: 340, y: 150, owner: "neutral", army: 0, type: null, castle: 1, exhausted: false, adj: [14, 15, 21, 22, 25] },
-        { id: 19, name: "요동성", x: 170, y: 40, owner: "neutral", army: 1, type: "spearman", castle: 1, exhausted: false, adj: [20, 22, 26] },
-        { id: 20, name: "백암성", x: 120, y: 100, owner: "neutral", army: 1, type: "infantry", castle: 0, exhausted: false, adj: [12, 19, 27] }, 
-        { id: 21, name: "백두산 요새", x: 420, y: 120, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [16, 18, 23, 24] },
-        { id: 22, name: "개모성", x: 240, y: 60, owner: "neutral", army: 0, type: null, castle: 1, exhausted: false, adj: [15, 18, 19, 25] },
-        { id: 23, name: "부여성(지린)", x: 400, y: 20, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [21, 24, 25] },
-        { id: 24, name: "책성(두만강하구)", x: 600, y: 20, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [17, 21, 23] },
-        { id: 25, name: "현도성", x: 340, y: 60, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [18, 22, 23] },
-        { id: 26, name: "숙군성", x: 40, y: 40, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [19, 27] },
-        { id: 27, name: "안시성", x: 60, y: 140, owner: "neutral", army: 0, type: null, castle: 1, exhausted: false, adj: [20, 26, 28] },
-        { id: 28, name: "비사성(다렌)", x: 40, y: 220, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [4, 12, 27] },
-        { id: 8, name: "금돌성(상주)", x: 400, y: 530, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [32, 52, 53] },
-        { id: 30, name: "거벌모라(울진)", x: 520, y: 440, owner: "neutral", army: 1, type: "infantry", castle: 0, exhausted: false, adj: [31, 34, 51, 53] }, 
-        { id: 31, name: "익령현(속초)", x: 500, y: 360, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [16, 30, 42, 51] }, 
-        { id: 32, name: "달구벌(대구)", x: 410, y: 600, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [5, 6, 8, 33, 35, 36] }, 
-        { id: 33, name: "경주(금성-신라수도)", x: 530, y: 630, owner: "neutral", army: 0, type: null, castle: 1, exhausted: false, adj: [32, 34, 37, 53] }, 
-        { id: 34, name: "근오지(포항)", x: 560, y: 560, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [30, 33, 53] }, 
-        { id: 35, name: "대야성(합천)", x: 340, y: 680, owner: "neutral", army: 1, type: "spearman", castle: 0, exhausted: false, adj: [7, 32, 38] }, 
-        { id: 36, name: "비사벌(창녕)", x: 420, y: 680, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [32, 39] },
-        { id: 37, name: "거칠산(부산)", x: 510, y: 700, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [33, 39, 41] },
+        { id: 16, name: "매시달", x: 430, y: 270, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [17, 31, 50] }, 
+        { id: 17, name: "황초령", x: 490, y: 210, owner: "neutral", army: 1, type: "spearman", castle: 0, exhausted: false, adj: [16, 24] },
+        { id: 18, name: "국내성(고구려수도)", x: 340, y: 170, owner: "neutral", army: 0, type: null, castle: 1, exhausted: false, adj: [14, 15, 21, 25] },
+        { id: 19, name: "요동성", x: 160, y: 80, owner: "neutral", army: 1, type: "spearman", castle: 1, exhausted: false, adj: [20, 22, 26] },
+        { id: 20, name: "안시성", x: 110, y: 130, owner: "neutral", army: 1, type: "infantry", castle: 0, exhausted: false, adj: [12, 19, 27] }, 
+        { id: 21, name: "백두산 요새", x: 450, y: 100, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [18, 23, 24] },
+        { id: 22, name: "현도성", x: 220, y: 30, owner: "neutral", army: 0, type: null, castle: 1, exhausted: false, adj: [15, 19, 25] },
+        { id: 23, name: "부여성", x: 400, y: 20, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [21, 24, 25] },
+        { id: 24, name: "책성(두만강하구)", x: 610, y: 60, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [17, 21, 23] },
+        { id: 25, name: "신성", x: 300, y: 80, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [18, 22, 23] },
+        { id: 26, name: "숙군성", x: 40, y: 70, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [19, 27] },
+        { id: 27, name: "건안성", x: 75, y: 190, owner: "neutral", army: 0, type: null, castle: 1, exhausted: false, adj: [20, 26, 28] },
+        { id: 28, name: "비사성", x: 40, y: 240, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [4, 12, 27] },
+        { id: 8, name: "금돌성", x: 440, y: 585, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [5, 32, 53] },
+        { id: 30, name: "거벌모라", x: 580, y: 490, owner: "neutral", army: 1, type: "infantry", castle: 0, exhausted: false, adj: [31, 34, 36] }, 
+        { id: 31, name: "익령현", x: 510, y: 380, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [16, 30, 42, 51, 52] }, 
+        { id: 32, name: "달구벌", x: 490, y: 620, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [8, 33, 35] }, 
+        { id: 33, name: "경주(금성-신라수도)", x: 555, y: 640, owner: "neutral", army: 0, type: null, castle: 1, exhausted: false, adj: [32, 34, 36, 37, 39] }, 
+        { id: 34, name: "근오지", x: 590, y: 585, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [30, 33, 36] }, 
+        { id: 35, name: "대야성", x: 440, y: 680, owner: "neutral", army: 1, type: "spearman", castle: 0, exhausted: false, adj: [5, 7, 32, 38, 39] }, 
+        { id: 36, name: "고타군", x: 530, y: 550, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [30, 33, 34, 53] },
+        { id: 37, name: "거칠산", x: 570, y: 715, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [33, 39, 41] },
       
-        { id: 38, name: "원촌(여수)", x: 330, y: 760, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [35, 39, 44] },
-        { id: 39, name: "탁순국(창원)", x: 420, y: 760, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [36, 37, 38, 41] },
-        { id: 40, name: "야마토(왜국총본산)", x: 740, y: 760, owner: "neutral", army: 2, type: "archer", castle: 1, exhausted: false, adj: [43, 48] },
-        { id: 41, name: "대마도", x: 580, y: 760, owner: "neutral", army: 1, type: "infantry", castle: 0, exhausted: false, adj: [37, 39, 43, 46] },
-        { id: 42, name: "우산국", x: 620, y: 350, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [31] },
-        { id: 43, name: "규슈(나노국)", x: 660, y: 760, owner: "neutral", army: 1, type: "spearman", castle: 0, exhausted: false, adj: [41, 40] },
-        { id: 44, name: "복홀(보성)", x: 260, y: 760, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [7, 9, 38, 45] }, 
-        { id: 45, name: "탐라국(제주도)", x: 200, y: 880, owner: "neutral", army: 1, type: "infantry", castle: 0, exhausted: false, adj: [44, 46] },
-        { id: 46, name: "남해 해상요충", x: 440, y: 860, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [41, 45, 47] },
-        { id: 47, name: "시코쿠 포구", x: 660, y: 860, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [46, 48] },
+        { id: 38, name: "원촌", x: 400, y: 760, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [35, 39, 44, 46] },
+        { id: 39, name: "탁순국", x: 490, y: 740, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [33, 35, 37, 38, 41] },
+        { id: 40, name: "야마토", x: 760, y: 770, owner: "neutral", army: 2, type: "archer", castle: 1, exhausted: false, adj: [43, 48] },
+        { id: 41, name: "대마도", x: 550, y: 800, owner: "neutral", army: 1, type: "infantry", castle: 0, exhausted: false, adj: [37, 39, 43, 46] },
+        { id: 42, name: "우산국", x: 660, y: 440, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [31] },
+        { id: 43, name: "규슈", x: 660, y: 810, owner: "neutral", army: 1, type: "spearman", castle: 0, exhausted: false, adj: [41, 40] },
+        { id: 44, name: "복홀", x: 330, y: 790, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [7, 9, 38, 45] }, 
+        { id: 45, name: "탐라", x: 280, y: 890, owner: "neutral", army: 1, type: "infantry", castle: 0, exhausted: false, adj: [44, 46] },
+        { id: 46, name: "남해 해상요충", x: 420, y: 830, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [38, 41, 45, 47] },
+        { id: 47, name: "시코쿠 포구", x: 600, y: 900, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [46, 48] },
         { id: 48, name: "혼슈 서부관문", x: 740, y: 860, owner: "neutral", army: 1, type: "spearman", castle: 0, exhausted: false, adj: [40, 47] },
-        { id: 50, name: "흘골산성", x: 340, y: 280, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [10, 14, 16, 51] }, 
-        { id: 51, name: "철원성", x: 390, y: 340, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [13, 30, 31, 50] }, 
-        { id: 52, name: "칠중성(파주)", x: 320, y: 430, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [0, 5, 8, 11, 13, 53] }, 
-        { id: 53, name: "죽령 하늘재(단양)", x: 430, y: 470, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [8, 30, 33, 34, 52] }
+        { id: 50, name: "흘골산성", x: 330, y: 300, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [10, 14, 16, 51] }, 
+        { id: 51, name: "철원성", x: 390, y: 340, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [13, 31, 50] }, 
+        { id: 52, name: "국원성", x: 395, y: 490, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [0, 1, 5, 31, 53] }, 
+        { id: 53, name: "죽령 하늘재", x: 470, y: 520, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [8, 36, 52] }
     ];
     let nodes = [];
 
@@ -423,30 +439,6 @@
         setTimeout(adjustMapScale, 100); 
     }
 
-    function drawCoastlines() {
-        const canvas = document.getElementById('coastline-canvas');
-        const ctx = canvas.getContext('2d');
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = '#f7fee7'; ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 4;
-
-        ctx.beginPath();
-        ctx.moveTo(1, 1); ctx.lineTo(50, 50); ctx.lineTo(1, 240); ctx.lineTo(120, 220);
-        ctx.lineTo(150, 210); ctx.lineTo(240, 250); ctx.lineTo(160, 370);
-        ctx.lineTo(230, 400); ctx.lineTo(180, 500); ctx.lineTo(200, 640); ctx.lineTo(160, 720); ctx.lineTo(160, 800);
-        ctx.lineTo(250, 800); ctx.lineTo(320, 800);
-        ctx.lineTo(400, 780); ctx.lineTo(490, 740); ctx.lineTo(560, 680);
-        ctx.lineTo(600, 560); ctx.lineTo(440, 240); ctx.lineTo(500, 200); ctx.lineTo(560, 90); ctx.lineTo(700, 1);
-        ctx.closePath(); ctx.fill(); ctx.stroke();
-
-        ctx.beginPath();
-        ctx.moveTo(560, 880); ctx.bezierCurveTo(620, 820, 680, 720, 760, 720); ctx.bezierCurveTo(790, 760, 780, 840, 720, 900);
-        ctx.bezierCurveTo(660, 920, 580, 920, 560, 880);
-        ctx.closePath(); ctx.fill(); ctx.stroke();
-
-        const islands = [{x: 200, y: 880, r: 35}, {x: 580, y: 760, r: 14}, {x: 620, y: 350, r: 12}];
-        islands.forEach(isl => { ctx.beginPath(); ctx.arc(isl.x, isl.y, isl.r, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); });
-    }
-
     function getVisibleNodeIds() {
         let visibleIds = new Set();
         let myNodes = nodes.filter(n => n.owner === playerSide);
@@ -498,7 +490,6 @@
     }
 
     function initMap() {
-        drawCoastlines();
         const mapContainer = document.getElementById('map-container');
         const svg = document.getElementById('svg-lines');
         svg.innerHTML = '';
