@@ -5,42 +5,60 @@
     <title>조선상고사 - 삼국시대 완벽통합판</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <style>
-        body { font-family: 'Malgun Gothic', sans-serif; background-color: #f1f5f9; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; box-sizing: border-box; }
-        h1 { margin-bottom: 5px; color: #1e293b; text-align: center; }
+        body { font-family: 'Malgun Gothic', sans-serif;
+            background-color: #f1f5f9; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; box-sizing: border-box;
+        }
+        h1 { margin-bottom: 5px; color: #1e293b; text-align: center;
+        }
         
         /* 🏰 선택 화면 스타일 최적화 */
-        #selection-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 85vh; text-align: center; width: 100%; max-width: 400px; }
-        #selection-screen h1 { font-size: 26px; font-weight: 800; color: #0f172a; letter-spacing: -1px; margin-bottom: 0; }
-        #selection-screen p { font-size: 14px; color: #475569; margin-top: 5px; font-weight: 500; padding: 0 10px; }
+        #selection-screen { display: flex;
+            flex-direction: column; align-items: center; justify-content: center; min-height: 85vh; text-align: center; width: 100%; max-width: 400px;
+        }
+        #selection-screen h1 { font-size: 26px; font-weight: 800; color: #0f172a; letter-spacing: -1px;
+            margin-bottom: 0; }
+        #selection-screen p { font-size: 14px; color: #475569; margin-top: 5px;
+            font-weight: 500; padding: 0 10px; }
         
-        .choice-container { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; width: 100%; }
+        .choice-container { display: flex;
+            flex-direction: column; gap: 12px; margin-top: 20px; width: 100%; }
         
         .choice-card { 
-            position: relative; width: 100%; padding: 15px 15px; border-radius: 15px; 
+            position: relative;
+            width: 100%; padding: 15px 15px; border-radius: 15px; 
             font-size: 20px; font-weight: 800; color: white; cursor: pointer; 
-            transition: all 0.2s ease; 
+            transition: all 0.2s ease;
             box-shadow: 0 6px 12px rgba(0,0,0,0.12), inset 0 2px 4px rgba(255,255,255,0.3);
-            border: 3px solid rgba(255,255,255,0.15); display: flex; flex-direction: column; align-items: center; gap: 6px;
+            border: 3px solid rgba(255,255,255,0.15); display: flex; flex-direction: column; align-items: center;
+            gap: 6px;
             box-sizing: border-box;
         }
-        .choice-card:hover { transform: scale(1.02); }
-        .card-icon { font-size: 32px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.25)); }
+        .choice-card:hover { transform: scale(1.02);
+        }
+        .card-icon { font-size: 32px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.25));
+        }
         
-        .card-goguryeo { background: linear-gradient(135deg, #dc2626, #7f1d1d); }
-        .card-goguryeo::after { content: '🦅 광개토대왕 (삼족오의 후예)'; font-size: 12px; opacity: 0.9; font-weight: 600; background: rgba(0,0,0,0.2); padding: 2px 8px; border-radius: 4px; }
+        .card-goguryeo { background: linear-gradient(135deg, #dc2626, #7f1d1d);
+        }
+        .card-goguryeo::after { content: '🦅 광개토대왕 (삼족오의 후예)'; font-size: 12px; opacity: 0.9;
+            font-weight: 600; background: rgba(0,0,0,0.2); padding: 2px 8px; border-radius: 4px; }
         
-        .card-baekje { background: linear-gradient(135deg, #2563eb, #1e3a8a); }
-        .card-baekje::after { content: '🌊 근초고왕 (대백제의 바다)'; font-size: 12px; opacity: 0.9; font-weight: 600; background: rgba(0,0,0,0.2); padding: 2px 8px; border-radius: 4px; }
+        .card-baekje { background: linear-gradient(135deg, #2563eb, #1e3a8a);
+        }
+        .card-baekje::after { content: '🌊 근초고왕 (대백제의 바다)'; font-size: 12px; opacity: 0.9;
+            font-weight: 600; background: rgba(0,0,0,0.2); padding: 2px 8px; border-radius: 4px; }
         
-        .card-silla { background: linear-gradient(135deg, #eab308, #713f12); }
-        .card-silla::after { content: '⚜️ 진흥왕 (삼한일통의 서원)'; font-size: 12px; opacity: 0.9; font-weight: 600; background: rgba(0,0,0,0.2); padding: 2px 8px; border-radius: 4px; }
+        .card-silla { background: linear-gradient(135deg, #eab308, #713f12);
+        }
+        .card-silla::after { content: '⚜️ 진흥왕 (삼한일통의 서원)'; font-size: 12px; opacity: 0.9;
+            font-weight: 600; background: rgba(0,0,0,0.2); padding: 2px 8px; border-radius: 4px; }
         
         /* 게임 화면 스타일 */
-        #game-screen { display: none; flex-direction: column; align-items: center; width: 100%; }
+        #game-screen { display: none;
+            flex-direction: column; align-items: center; width: 100%; }
         
-        /* 기기 너비에 맞춰 가로/세로 배치를 자동 전환하는 반응형 컨테이너 */
         .container { 
-            display: flex; 
+            display: flex;
             flex-direction: row; 
             gap: 20px; 
             max-width: 1450px; 
@@ -49,7 +67,6 @@
             justify-content: center;
         }
         
-        /* 스케일러 래퍼 기본 상태 (PC) */
         #map-scaler-wrapper {
             display: flex;
             flex-direction: row;
@@ -59,15 +76,22 @@
         }
 
         #map-container { 
-            position: relative; width: 800px; height: 950px; flex-shrink: 0; 
+            position: relative;
+            width: 800px; height: 950px; flex-shrink: 0; 
             background-color: #bae6fd; border: 8px solid #cbd5e1; border-radius: 20px; 
-            box-shadow: 0 12px 30px rgba(0,0,0,0.15); overflow: hidden;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+            overflow: hidden;
         }
         
-        #coastline-canvas { position: absolute; top:0; left:0; width:100%; height:100%; z-index: 2; pointer-events: none; }
+        #coastline-canvas { position: absolute;
+            top:0; left:0; width:100%; height:100%; z-index: 2; pointer-events: none; }
         
-        .node { position: absolute; width: 36px; height: 36px; border-radius: 50%; background-color: #94a3b8; border: 2px solid #ffffff; z-index: 10; cursor: pointer; transform: translate(-50%, -50%); transition: all 0.2s; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
-        .node:hover { transform: translate(-50%, -50%) scale(1.15); box-shadow: 0 0 15px #f59e0b; }
+        .node { position: absolute;
+            width: 36px; height: 36px; border-radius: 50%; background-color: #94a3b8; border: 2px solid #ffffff; z-index: 10; cursor: pointer; transform: translate(-50%, -50%);
+            transition: all 0.2s; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .node:hover { transform: translate(-50%, -50%) scale(1.15); box-shadow: 0 0 15px #f59e0b;
+        }
         
         .node.baekje { background-color: #2563eb; border-color: #eff6ff; } 
         .node.goguryeo { background-color: #dc2626; border-color: #fef2f2; } 
@@ -76,7 +100,6 @@
         .node.neutral { background-color: #475569; }
         .node.selected { border-color: #f59e0b; box-shadow: 0 0 22px #f59e0b; width: 42px; height: 42px; }
         
-        /* 🕵️ 시야가 없는 안개 지역 성 스타일 보정 (글자 가리는 shadow 완전 제거) */
         .node.unrevealed { background-color: #64748b !important; border-color: #475569 !important; box-shadow: none !important; }
         .node.unrevealed .unit-icon, .node.unrevealed .army-count, .node.unrevealed .castle-icon { display: none !important; }
         .node.unrevealed .node-label { background: #cbd5e1; color: #475569; }
@@ -86,14 +109,15 @@
         .node .army-count { color: #fff; font-weight: bold; font-size: 13px; pointer-events: none; text-shadow: none !important; }
         
         .node .castle-icon { position: absolute; top: -18px; font-size: 16px; pointer-events: none; font-weight: normal; text-shadow: none !important; }
-        .node-label { position: absolute; bottom: -20px; white-space: nowrap; font-size: 9.5px; font-weight: bold; background: rgba(255,255,255,0.9); padding: 2px 4px; border-radius: 4px; color: #1e293b; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
+        .node-label { position: absolute; bottom: -20px; white-space: nowrap; font-size: 9.5px; font-weight: bold;
+            background: rgba(255,255,255,0.9); padding: 2px 4px; border-radius: 4px; color: #1e293b; box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+        }
 
         svg { position: absolute; width: 100%; height: 100%; z-index: 5; pointer-events: none; }
         line { stroke: #451a03; stroke-width: 3; stroke-linecap: round; opacity: 0.35; }
         line.sea-route { stroke: #0284c7; stroke-width: 3.5; stroke-dasharray: 4 4; opacity: 0.7; }
         line.hidden-line { opacity: 0.05; }
 
-        /* 패널 기본 상태 (PC 우측 정렬용) */
         .panel { width: 450px; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 15px; box-sizing: border-box; }
         .status-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 5px; }
         .status-box { padding: 10px 4px; border-radius: 8px; border-top: 5px solid #cbd5e1; font-size: 13px; font-weight: bold; text-align: center; background: #f8fafc; }
@@ -187,7 +211,7 @@
                     <div class="action-section">
                         <button class="btn btn-spy" id="btn-spy-upgrade" onclick="upgradeSpy()">🕵️ 세작 양성하기 (300 골드)</button>
                         <button class="btn btn-castle" id="btn-castle" onclick="buildCastle()" style="display:none;">🧱 1단계 성벽 구축 (100 골드)</button>
-                        
+      
                         <h4 id="recruit-title" style="margin: 8px 0 4px 0; font-size: 14px;">⚔️ 군사 배치</h4>
                         <div class="unit-buy-grid">
                             <button class="btn-unit" onclick="buyUnit('infantry', 20)">✊ 보병 (20G)<br><span style="font-size:9px;color:#64748b;">기본 병사</span></button>
@@ -201,11 +225,11 @@
                 <div>
                     <button class="btn btn-active" id="btn-end-turn" onclick="endPlayerTurn()">⏳ 작전 완료 (턴 종료)</button>
                     <div class="log-box" id="log-box">
-                        <span class="sys-msg">[전략 사령부 가동]</span> 고지능 오퍼레이션 적국 양면 연산 프로세서가 정상 기동됩니다.<br>
+                      <span class="sys-msg">[전략 사령부 가동]</span> 고지능 오퍼레이션 적국 양면 연산 프로세서가 정상 기동됩니다.<br>
                     </div>
                     <button class="btn btn-home" onclick="returnToHome()">🏠 처음 화면으로 (세력 다시 선택)</button>
                 </div>
-            </div>
+         </div>
         </div>
     </div>
 </div>
@@ -220,6 +244,7 @@
 <script>
     let playerSide = 'silla';
     let pendingMoveData = null;
+    let resizeTimeout = null;
     
     const initialNodesData = [
         { id: 0, name: "위례성(백제수도)", x: 240, y: 450, owner: "neutral", army: 0, type: null, castle: 1, exhausted: false, adj: [1, 2, 4, 11, 52] }, 
@@ -231,12 +256,15 @@
         { id: 6, name: "금마저(익산)", x: 260, y: 620, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [3, 5, 7, 32] }, 
         { id: 7, name: "무진(광주)", x: 190, y: 680, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [3, 6, 9, 35, 44] }, 
         { id: 9, name: "물아혜(목포)", x: 190, y: 760, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [7, 44] },
+  
         { id: 10, name: "평양성 대성곽", x: 260, y: 300, owner: "neutral", army: 2, type: "archer", castle: 0, exhausted: false, adj: [4, 11, 14, 50] }, 
         { id: 11, name: "개경", x: 260, y: 380, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [0, 4, 10, 13, 52] }, 
         { id: 12, name: "오골성 요새", x: 180, y: 220, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [14, 15, 20, 28] },
+ 
         { id: 13, name: "매소성(연천)", x: 310, y: 360, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [11, 51, 52] }, 
         { id: 14, name: "철옹성(녕변)", x: 260, y: 220, owner: "neutral", army: 1, type: "infantry", castle: 0, exhausted: false, adj: [10, 12, 18, 50] }, 
         { id: 15, name: "신성", x: 240, y: 140, owner: "neutral", army: 0, type: null, castle: 1, exhausted: false, adj: [12, 18, 22] },
+     
         { id: 16, name: "매시달(원산)", x: 440, y: 250, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [17, 21, 31, 50] }, 
         { id: 17, name: "황초령(함흥)", x: 490, y: 180, owner: "neutral", army: 1, type: "spearman", castle: 0, exhausted: false, adj: [16, 24] },
         { id: 18, name: "국내성(고구려수도)", x: 340, y: 150, owner: "neutral", army: 0, type: null, castle: 1, exhausted: false, adj: [14, 15, 21, 22, 25] },
@@ -259,6 +287,7 @@
         { id: 35, name: "대야성(합천)", x: 340, y: 680, owner: "neutral", army: 1, type: "spearman", castle: 0, exhausted: false, adj: [7, 32, 38] }, 
         { id: 36, name: "비사벌(창녕)", x: 420, y: 680, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [32, 39] },
         { id: 37, name: "거칠산(부산)", x: 510, y: 700, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [33, 39, 41] },
+      
         { id: 38, name: "원촌(여수)", x: 330, y: 760, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [35, 39, 44] },
         { id: 39, name: "탁순국(창원)", x: 420, y: 760, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [36, 37, 38, 41] },
         { id: 40, name: "야마토(왜국총본산)", x: 740, y: 760, owner: "neutral", army: 2, type: "archer", castle: 1, exhausted: false, adj: [43, 48] },
@@ -275,15 +304,13 @@
         { id: 52, name: "칠중성(파주)", x: 320, y: 430, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [0, 5, 8, 11, 13, 53] }, 
         { id: 53, name: "죽령 하늘재(단양)", x: 430, y: 470, owner: "neutral", army: 0, type: null, castle: 0, exhausted: false, adj: [8, 30, 33, 34, 52] }
     ];
-
-    let nodes = JSON.parse(JSON.stringify(initialNodesData));
+    let nodes = [];
 
     let game = { 
         turn: 1, goguryeoGold: 100, baekjeGold: 100, sillaGold: 100, 
         selectedNodeId: null, goguryeoDefeated: false, baekjeDefeated: false, sillaDefeated: false,
         moveCount: 0, spyLevel: 0
     };
-
     const CAPITAL_IDS = [0, 18, 33];
     const unitCodes = { infantry: "보", spearman: "창", archer: "궁", cavalry: "기" };
     const sideStyles = {
@@ -298,7 +325,6 @@
         archer: { win: 'spearman', lose: 'cavalry' },
         infantry: { win: null, lose: 'archer' }
     };
-
     const INITIAL_FACTION_CONFIG = {
         silla: {
             baekje: [{id:1, army:1, type:'infantry'}, {id:2, army:1, type:'infantry'}],
@@ -316,7 +342,6 @@
             neutral: [{id:15, army:1, type:'spearman'}, {id:22, army:1, type:'infantry'}]
         }
     };
-
     function getNode(id) {
         return nodes.find(n => n.id === id);
     }
@@ -326,36 +351,34 @@
         const map = document.getElementById('map-container');
         const panel = document.querySelector('.panel');
         if (!wrapper || !map || !panel) return;
-
         const windowWidth = window.innerWidth - 20; 
         const isMobileFactor = window.getComputedStyle(panel).width === '800px' || window.innerWidth <= 1280;
-
         if (isMobileFactor && windowWidth < 800) {
             const scale = windowWidth / 800;
             wrapper.style.transform = `scale(${scale})`;
-            wrapper.style.height = `${(965 + panel.offsetHeight) * scale}px`; 
+            wrapper.style.height = `${(965 + panel.offsetHeight) * scale}px`;
         } else {
             wrapper.style.transform = 'none';
             wrapper.style.height = 'auto';
         }
     }
 
-    window.addEventListener('resize', adjustMapScale);
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(adjustMapScale, 50);
+    });
 
     function returnToHome() {
         if(!confirm("진행 중인 게임이 초기화됩니다. 메인 화면으로 돌아가시겠습니까?")) return;
-        
-        nodes = JSON.parse(JSON.stringify(initialNodesData));
+        nodes = structuredClone(initialNodesData);
         game = { 
             turn: 1, goguryeoGold: 100, baekjeGold: 100, sillaGold: 100, 
             selectedNodeId: null, goguryeoDefeated: false, baekjeDefeated: false, sillaDefeated: false,
             moveCount: 0, spyLevel: 0
         };
-
         const mapContainer = document.getElementById('map-container');
         const existingNodes = mapContainer.querySelectorAll('.node');
         existingNodes.forEach(n => n.remove());
-
         document.getElementById('log-box').innerHTML = `<span class="sys-msg">[전략 사령부 가동]</span> 고지능 오퍼레이션 적국 양면 연산 프로세서가 정상 기동됩니다.<br>`;
 
         document.getElementById('game-screen').style.display = 'none';
@@ -364,11 +387,15 @@
 
     function startGame(side) {
         playerSide = side;
+        nodes = structuredClone(initialNodesData);
+        
+        const mapContainer = document.getElementById('map-container');
+        const existingNodes = mapContainer.querySelectorAll('.node');
+        existingNodes.forEach(n => n.remove());
 
         const capG = getNode(18); capG.owner = "goguryeo"; capG.army = 2; capG.type = "cavalry";
-        const capB = getNode(0);  capB.owner = "baekje";    capB.army = 3; capB.type = "infantry";    
+        const capB = getNode(0);  capB.owner = "baekje"; capB.army = 3; capB.type = "infantry";    
         const capS = getNode(33); capS.owner = "silla";    capS.army = 1; capS.type = "spearman";
-
         const currentConfig = INITIAL_FACTION_CONFIG[playerSide];
         if (currentConfig) {
             Object.keys(currentConfig).forEach(ownerSide => {
@@ -406,13 +433,14 @@
         ctx.moveTo(1, 1); ctx.lineTo(50, 50); ctx.lineTo(1, 240); ctx.lineTo(120, 220);
         ctx.lineTo(150, 210); ctx.lineTo(240, 250); ctx.lineTo(160, 370);
         ctx.lineTo(230, 400); ctx.lineTo(180, 500); ctx.lineTo(200, 640); ctx.lineTo(160, 720); ctx.lineTo(160, 800);
-        ctx.lineTo(250, 800); ctx.lineTo(320, 800); ctx.lineTo(400, 780); ctx.lineTo(490, 740); ctx.lineTo(560, 680);
+        ctx.lineTo(250, 800); ctx.lineTo(320, 800);
+        ctx.lineTo(400, 780); ctx.lineTo(490, 740); ctx.lineTo(560, 680);
         ctx.lineTo(600, 560); ctx.lineTo(440, 240); ctx.lineTo(500, 200); ctx.lineTo(560, 90); ctx.lineTo(700, 1);
         ctx.closePath(); ctx.fill(); ctx.stroke();
 
         ctx.beginPath();
         ctx.moveTo(560, 880); ctx.bezierCurveTo(620, 820, 680, 720, 760, 720); ctx.bezierCurveTo(790, 760, 780, 840, 720, 900);
-        ctx.bezierCurveTo(660, 920, 580, 920, 560, 880); 
+        ctx.bezierCurveTo(660, 920, 580, 920, 560, 880);
         ctx.closePath(); ctx.fill(); ctx.stroke();
 
         const islands = [{x: 200, y: 880, r: 35}, {x: 580, y: 760, r: 14}, {x: 620, y: 350, r: 12}];
@@ -424,7 +452,6 @@
         let myNodes = nodes.filter(n => n.owner === playerSide);
         
         myNodes.forEach(n => visibleIds.add(n.id));
-
         if (game.spyLevel === 2) {
             nodes.forEach(n => visibleIds.add(n.id));
             return visibleIds;
@@ -432,7 +459,6 @@
 
         let currentFrontier = myNodes.map(n => n.id);
         let maxDepth = (game.spyLevel === 1) ? 2 : 1;
-
         for (let d = 0; d < maxDepth; d++) {
             let nextFrontier = [];
             currentFrontier.forEach(id => {
@@ -496,7 +522,6 @@
                }
             });
         });
-
         nodes.forEach(node => {
             const div = document.createElement('div');
             div.className = `node ${node.owner}`;
@@ -510,6 +535,10 @@
             div.appendChild(label);
 
             mapContainer.appendChild(div);
+
+            node.domElement = div;
+            node.iconSpan = iconSpan;
+            node.armyCountSpan = armyCount;
         });
         updateMapUI();
     }
@@ -570,16 +599,13 @@
 
     function openSplitModal(startNode, targetNode) {
         pendingMoveData = { startNode, targetNode };
-        
         const modal = document.getElementById('army-split-modal');
         const desc = document.getElementById('modal-desc');
         const btnContainer = document.getElementById('modal-buttons');
-        
         desc.innerHTML = `🛡️ <strong>[${startNode.name}] ➔ [${targetNode.name}]</strong><br>출정 부대 인원 선택`;
         btnContainer.innerHTML = ''; 
 
         const maxAvailable = startNode.army;
-
         for (let i = 1; i <= maxAvailable; i++) {
             const btn = document.createElement('button');
             btn.className = 'btn-split-opt';
@@ -617,31 +643,26 @@
 
     function updateMapUI() {
         const visibleIds = getVisibleNodeIds();
-
         nodes.forEach(node => {
-            const div = document.getElementById(`node-${node.id}`);
+            const div = node.domElement;
             if(!div) return;
             
-            // 기본 클래스 및 상태 초기화
             div.className = `node ${node.owner}`;
             if (node.owner === playerSide && node.exhausted) div.classList.add('exhausted');
             if (game.selectedNodeId === node.id) div.classList.add('selected');
             if (node.castle > 0) div.classList.add('has-castle');
             
-            const iconSpan = div.querySelector('.unit-icon');
-            const countSpan = div.querySelector('.army-count');
+            const iconSpan = node.iconSpan;
+            const countSpan = node.armyCountSpan;
             
-            // 구형 고정 방식 엘리먼트 완전 파괴 후 재빌드 루틴 가동
             const oldCastle = div.querySelector('.castle-icon');
             if (oldCastle) oldCastle.remove();
 
-            // 🕵️ [버그 수정 핵심]: 안개 지역(unrevealed) 여부를 먼저 판단하여 그릴지 말지 완전 분기
             let isVisible = visibleIds.has(node.id);
 
             if (!isVisible) {
                 if (CAPITAL_IDS.includes(node.id)) {
-                    // 수도는 검은 그림자 꼬임 없이 깔끔하게 '물음표와 수도관문 마크'만 표시
-                    div.className = "node neutral"; 
+                    div.className = "node neutral";
                     iconSpan.innerText = "?";
                     countSpan.innerText = "";
                     const fakeCastle = document.createElement('span'); 
@@ -649,20 +670,18 @@
                     fakeCastle.innerText = "👑"; 
                     div.appendChild(fakeCastle);
                 } else {
-                    // 일반 안개지역은 성벽 아이콘 생성 자체를 스킵하고 블라인드
                     div.classList.add('unrevealed');
                     iconSpan.innerText = "";
                     countSpan.innerText = "";
                 }
             } else {
-                // 시야가 있는 지역(내 땅 + 밝혀진 적국 땅)일 때만 성벽을 정격 렌더링
                 if (node.castle === 1) {
-                    const castleIcon = document.createElement('span'); 
+                    const castleIcon = document.createElement('span');
                     castleIcon.className = 'castle-icon'; 
                     castleIcon.innerText = "🧱"; 
                     div.appendChild(castleIcon);
                 } else if (node.castle === 2) {
-                    const castleIcon = document.createElement('span'); 
+                    const castleIcon = document.createElement('span');
                     castleIcon.className = 'castle-icon'; 
                     castleIcon.innerText = "🏰"; 
                     div.appendChild(castleIcon);
@@ -672,15 +691,15 @@
                     iconSpan.innerText = unitCodes[node.type] || '';
                     countSpan.innerText = node.army;
                 } else { 
-                    iconSpan.innerText = ""; 
+                    iconSpan.innerText = "";
                     countSpan.innerText = ""; 
                 }
             }
 
-            // 경로선 가시성 제어
             node.adj.forEach(targetId => {
                 let edgeKey = Math.min(node.id, targetId) + "-" + Math.max(node.id, targetId);
                 let line = document.getElementById(`line-${edgeKey}`);
+            
                 if (line) {
                     if (visibleIds.has(node.id) || visibleIds.has(targetId)) {
                         line.classList.remove('hidden-line');
@@ -713,17 +732,19 @@
 
         const spyBtn = document.getElementById('btn-spy-upgrade');
         if (game.spyLevel === 0) {
-            spyBtn.innerText = "🕵️ 세작 파견 (300 골드) [현재 Lv.0]"; spyBtn.disabled = false;
+            spyBtn.innerText = "🕵️ 세작 파견 (300 골드) [현재 Lv.0]";
+            spyBtn.disabled = false;
         } else if (game.spyLevel === 1) {
-            spyBtn.innerText = "🦅 최고 정보력 확충 (500 골드) [현재 Lv.1]"; spyBtn.disabled = false;
+            spyBtn.innerText = "🦅 최고 정보력 확충 (500 골드) [현재 Lv.1]";
+            spyBtn.disabled = false;
         } else if (game.spyLevel === 2) {
-            spyBtn.innerText = "👁️ 전장 시야 완전 확보됨 [현재 Lv.2]"; spyBtn.disabled = true;
+            spyBtn.innerText = "👁️ 전장 시야 완전 확보됨 [현재 Lv.2]";
+            spyBtn.disabled = true;
         }
 
         const gCount = nodes.filter(n => n.owner === 'goguryeo').length;
         const bCount = nodes.filter(n => n.owner === 'baekje').length;
         const sCount = nodes.filter(n => n.owner === 'silla').length;
-        
         ['goguryeo', 'baekje', 'silla'].forEach(side => {
             const isDef = game[side + 'Defeated'];
             const box = document.getElementById(`box-${side}`);
@@ -739,7 +760,7 @@
             }
         });
         
-        setTimeout(adjustMapScale, 10);
+        adjustMapScale();
     }
 
     function executeCombatAndMove(attackerSourceNode, defender, side, movingArmy) {
@@ -747,7 +768,6 @@
         const logBox = document.getElementById('log-box');
         const sideNames = { goguryeo: "고구려(🔴)", baekje: "백제(🔵)", silla: "신라(🟡)" };
         const sideClass = { goguryeo: "g-msg", baekje: "b-msg", silla: "s-msg" };
-
         if (defender.owner === side) {
             if (defender.army === 0 || defender.type === attackerSourceNode.type) {
                 defender.army += movingArmy;
@@ -775,16 +795,18 @@
         }
 
         logBox.innerHTML += `<span class="${sideClass[side]}">⚔️ [전투] ${attackerSourceNode.name}(${sideNames[side]}) ➔ ${defender.name}</span><br>`;
-        let aPower = movingArmy; let dPower = defender.army;
+        let aPower = movingArmy;
+        let dPower = defender.army;
         let aType = attackerSourceNode.type; let dType = defender.type;
-
         if (aType && dType && dPower > 0) {
             if (UNIT_COUNTER_TABLE[aType] && UNIT_COUNTER_TABLE[aType].win === dType) {
                 dPower -= (aPower * 2);
-                if (dPower < 0) { aPower = Math.ceil(Math.abs(dPower) / 2); dPower = 0; } else { aPower = 0; }
+                if (dPower < 0) { aPower = Math.ceil(Math.abs(dPower) / 2); dPower = 0; } else { aPower = 0;
+                }
             } else if (UNIT_COUNTER_TABLE[dType] && UNIT_COUNTER_TABLE[dType].win === aType) {
                 aPower -= (dPower * 2);
-                if (aPower < 0) { dPower = Math.ceil(Math.abs(dPower) / 2); aPower = 0; } else { dPower = 0; }
+                if (aPower < 0) { dPower = Math.ceil(Math.abs(dPower) / 2); aPower = 0; } else { dPower = 0;
+                }
             } else if (aType === 'infantry' && dType !== 'infantry') { 
                 aPower = Math.floor(aPower / 2);
             } else if (dType === 'infantry' && aType !== 'infantry') { 
@@ -821,7 +843,6 @@
         const logBox = document.getElementById('log-box');
         const capitals = { goguryeo: 18, baekje: 0, silla: 33 };
         const textMap = { goguryeo: "고구려 소멸! 국내성 함락", baekje: "백제 소멸! 위례성 함락", silla: "신라 소멸! 금성 함락" };
-        
         if (getNode(capitals[playerSide]).owner !== playerSide) {
             const style = sideStyles[playerSide];
             alert(`🚨 [수도 함락] 종묘사직이 무너졌습니다. ${style.title}의 통일 대업이 아쉽게 좌절되었습니다.`);
@@ -836,7 +857,6 @@
                 nodes.forEach(n => { if(n.owner === side) { n.owner = 'neutral'; n.army = 0; n.type = null; n.castle = 0;} });
             }
         });
-
         const aiSides = ['goguryeo', 'baekje', 'silla'].filter(s => s !== playerSide);
         if (game[aiSides[0] + 'Defeated'] && game[aiSides[1] + 'Defeated']) {
             const style = sideStyles[playerSide];
@@ -848,13 +868,15 @@
     function buyUnit(type, cost) {
         if (game.selectedNodeId === null) return;
         const node = getNode(game.selectedNodeId);
-        if (node.army > 0 && node.type !== type) { alert("한 기지에는 같은 병종만 모을 수 있습니다!"); return; }
+        if (node.army > 0 && node.type !== type) { alert("한 기지에는 같은 병종만 모을 수 있습니다!");
+        return; }
         
         const goldKey = playerSide + 'Gold';
         if (game[goldKey] >= cost) { 
             game[goldKey] -= cost;
             node.army += 1; node.type = type; updateMapUI(); 
-        } else { alert("국고에 골드가 부족합니다!"); }
+        } else { alert("국고에 골드가 부족합니다!");
+        }
     }
 
     function buildCastle() {
@@ -864,7 +886,8 @@
         if (game[goldKey] >= 100 && node.castle < 2) {
             game[goldKey] -= 100;
             node.castle += 1; game.selectedNodeId = null; updateMapUI();
-        } else if(game[goldKey] < 100) { alert("골드가 부족합니다."); }
+        } else if(game[goldKey] < 100) { alert("골드가 부족합니다.");
+        }
     }
 
     function runEnemyAITurn(side, goldKey, isDefeated) {
@@ -878,7 +901,6 @@
         const capitalId = capitals[side];
         const capitalNode = getNode(capitalId);
         let capitalThreatened = false; let maxThreatArmy = 0; let threatType = null;
-        
         if (capitalNode && capitalNode.owner === side) {
             capitalNode.adj.forEach(id => {
                 let neighbor = getNode(id);
@@ -887,7 +909,7 @@
                     if (neighbor.army >= reqArmy && neighbor.army >= capitalNode.army) {
                         capitalThreatened = true;
                         if (neighbor.army > maxThreatArmy) { maxThreatArmy = neighbor.army; threatType = neighbor.type; }
-                     }
+                    }
                 }
             });
         }
@@ -905,7 +927,8 @@
                 capitalNode.army += 1; capitalNode.type = choice;
                 if (capitalNode.army >= maxThreatArmy + 2) break;
             }
-            if (game[goldKey] >= 100 && capitalNode.castle < 2) { game[goldKey] -= 100; capitalNode.castle += 1; }
+            if (game[goldKey] >= 100 && capitalNode.castle < 2) { game[goldKey] -= 100;
+            capitalNode.castle += 1; }
         }
 
         let frontNodes = myTerritories.filter(en => en.adj.some(id => {
@@ -931,12 +954,11 @@
             let cost = (choice === 'infantry') ? 20 : 40;
             while (game[goldKey] >= cost && (en.army === 0 || en.type === choice)) {
                 game[goldKey] -= cost; en.army += 1; en.type = choice;
-                if (game[goldKey] < 40) break; 
+                if (game[goldKey] < 40) break;
             }
         });
 
         frontNodes.forEach(en => { if (game[goldKey] >= 160 && en.castle < 2) { game[goldKey] -= 100; en.castle += 1; } });
-        
         let possibleMoves = [];
         myTerritories.forEach(en => {
             if (en.army < 2) return; 
@@ -960,8 +982,7 @@
                 let isCapital = (target.id === 0 || target.id === 18 || target.id === 33);
                 if (isCapital) score += 1500; 
                 else if (target.owner === 'neutral') score += 700;
-                else score += 250; 
-
+                else score += 250;
                 if (availableArmy > target.army) score += (availableArmy - target.army) * 20;
                 else score -= 150;
                 possibleMoves.push({ from: en, to: target, armyToMove: availableArmy, priorityScore: score });
@@ -987,7 +1008,6 @@
 
             let reqArmy = move.to.castle === 1 ? 3 : (move.to.castle === 2 ? 5 : 0);
             if (currentAvailableArmy < reqArmy) continue;
-            
             let success = executeCombatAndMove(move.from, move.to, side, currentAvailableArmy);
             if (success) aiMovesCount++;
         }
@@ -1001,15 +1021,11 @@
         game[countKey] += pCount * 10;
         nodes.forEach(node => { if (node.owner === playerSide) node.exhausted = false; });
         game.moveCount = 0;
-
         const order = ['goguryeo', 'baekje', 'silla'].filter(s => s !== playerSide);
         runAIChain(0);
-
         function runAIChain(index) {
             if (index >= order.length) {
                 game.turn += 1;
-                const txtTurn = document.getElementById('turn-txt');
-                if(txtTurn) txtTurn.innerText = game.turn;
                 
                 const style = sideStyles[playerSide];
                 document.getElementById('turn-banner').innerText = `${style.name.split('(')[0]} (${style.title}) 작전 타임 [Turn ${game.turn}]`;
@@ -1017,6 +1033,7 @@
                 
                 logBox.innerHTML += `----------------------------------------<br><span class="sys-msg">⏳ [제 ${game.turn} 턴 시작] 전략적 판세 배치가 업데이트되었습니다. 명령을 내리십시오.</span><br>`;
                 logBox.scrollTop = logBox.scrollHeight;
+            
                 updateMapUI();
                 return;
             }
@@ -1025,12 +1042,11 @@
             if (game[currentAISide + 'Defeated']) {
                 runAIChain(index + 1);
                 return;
-            }
+             }
 
             const style = sideStyles[currentAISide];
             document.getElementById('turn-banner').innerText = `${style.name.split('(')[0]} (${style.title}) 결집 연산 및 기동 중...`;
             document.getElementById('turn-banner').style.backgroundColor = style.bannerColor;
-            
             setTimeout(() => {
                 try {
                     runEnemyAITurn(currentAISide, currentAISide + 'Gold', game[currentAISide + 'Defeated']);
